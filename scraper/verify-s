@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# check if the corrcet number of arguments was given
+if [ ${#} -ne 1 ]; then
+        echo "Usage: $0 file/link">&2
+        exit 1
+fi
+
+# check if the given argument is a regular and readable file
+if [ -f $1 && -r $1 ]; then
+
+        # verify the file
+        ./verify_stack $1
+else # it is a link
+        # create a temp file to store the link html contents
+        echo > html_content.txt
+        # scrape the html content and put it into html_content.txt
+        python scrape_link.py $1 url
+        # verify the file
+        ./verify_stack html_content.txt
+        rm html_content
+fi
+
